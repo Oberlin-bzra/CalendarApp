@@ -6,7 +6,7 @@ Tailwind CSS. Users sign up with email/password, manage a month-view
 calendar with color-coded categories, and keep freeform notes separate
 from the calendar.
 
-**Live:** https://calendar-app-taupe-delta.vercel.app/
+**Live:** [Kalendo](https://kalendo-deploy.vercel.app/)
 
 ## Features
 
