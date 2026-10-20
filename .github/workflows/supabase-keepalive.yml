@@ -1,9 +1,7 @@
 name: Supabase Keep-Alive
 
-# Verhindert, dass das kostenlose Supabase-Projekt nach 7 Tagen
-# Inaktivität pausiert wird. Schickt täglich eine kleine Anfrage an die
-# Datenbank (Row Level Security liefert für anon einfach eine leere Liste,
-# die Anfrage zählt trotzdem als Datenbank-Aktivität).
+# Verhindert das Pausieren des kostenlosen Supabase-Projekts:
+# schickt täglich eine kleine Anfrage an die Datenbank.
 
 on:
   schedule:
@@ -15,20 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Supabase
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::Secrets SUPABASE_URL und SUPABASE_ANON_KEY fehlen."
-            exit 1
-          fi
-          status=$(curl -sS -o /dev/null -w "%{http_code}" \
-            "$SUPABASE_URL/rest/v1/events?select=id&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
-          echo "HTTP-Status: $status"
-          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
-            echo "::error::Supabase-Ping fehlgeschlagen (Status $status)"
-            exit 1
-          fi
+          curl -fsS "https://ibwsadfuohcfjndugbxr.supabase.co/rest/v1/events?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
